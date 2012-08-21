@@ -14,33 +14,32 @@
  * Contributors:
  *     ybonnel - initial API and implementation
  */
-package fr.ybonnel.beanfiles;
-
-import com.googlecode.beanfiles.csv.CSVReaderIterator;
-import fr.ybonnel.common.CommonStep1;
-import fr.ybonnel.common.Dog;
+package fr.ybonnel.common;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author ybonnel
  */
-public class BeanFilesStep1 extends CommonStep1{
+public abstract class CommonStep1 {
 
-    public List<Dog> getDogs(InputStream stream) throws IOException {
-        CSVReaderIterator<Dog> readerIterator = new CSVReaderIterator<Dog>(Dog.class, stream);
-        stream.close();
-        List<Dog> dogs = new ArrayList<Dog>();
-        for (Dog dog : readerIterator) {
-            dogs.add(dog);
-        }
-        return dogs;
+
+    public static InputStream getCsvFile() {
+        return CommonStep1.class.getResourceAsStream("/dogs.csv");
     }
 
-    public static void main(String[] args) throws IOException {
-        new BeanFilesStep1().readDogs();
+    public abstract List<Dog> getDogs(InputStream stream) throws IOException;
+
+    public long readDogs() throws IOException {
+        long startTime = System.nanoTime();
+
+        for (Dog dog : getDogs(getCsvFile())) {
+            System.out.println(dog);
+        }
+
+        long endTime = System.nanoTime();
+        return endTime - startTime;
     }
 }
