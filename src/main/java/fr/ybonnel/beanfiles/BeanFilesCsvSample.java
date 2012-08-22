@@ -17,7 +17,7 @@
 package fr.ybonnel.beanfiles;
 
 import com.googlecode.beanfiles.csv.CSVReaderIterator;
-import fr.ybonnel.common.CommonStep1;
+import fr.ybonnel.common.CommonCsvSample;
 import fr.ybonnel.common.Dog;
 import org.apache.commons.lang.NotImplementedException;
 
@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * @author ybonnel
  */
-public class BeanFilesStep1 extends CommonStep1{
+public class BeanFilesCsvSample extends CommonCsvSample {
 
     public List<Dog> getDogs(InputStream stream) throws IOException {
         CSVReaderIterator<Dog> readerIterator = new CSVReaderIterator<Dog>(Dog.class, stream);
@@ -48,6 +48,6 @@ public class BeanFilesStep1 extends CommonStep1{
     }
 
     public static void main(String[] args) throws IOException {
-        new BeanFilesStep1().readDogs();
+        new BeanFilesCsvSample().readDogs();
     }
 }

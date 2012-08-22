@@ -24,11 +24,11 @@ import java.util.List;
 /**
  * @author ybonnel
  */
-public abstract class CommonStep1 {
+public abstract class CommonCsvSample {
 
 
     public static InputStream getCsvFile() {
-        return CommonStep1.class.getResourceAsStream("/dogs.csv");
+        return CommonCsvSample.class.getResourceAsStream("/dogs.csv");
     }
 
     private List<Dog> currentDogs;
