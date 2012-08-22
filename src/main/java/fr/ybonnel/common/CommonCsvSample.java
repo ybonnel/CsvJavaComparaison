@@ -89,18 +89,21 @@ public abstract class CommonCsvSample {
         return elapsedTime;
     }
 
-    public void benchMoyen() throws InterruptedException, IOException {
+    public void bench(String file) throws InterruptedException, IOException {
 
         // Attention il faut lancer GenerationFichierCsv.main avant.
 
-        Thread.sleep(30000);
+        Thread.sleep(1000);
         gestionMemoire();
-        Thread.sleep(30000);
+        Thread.sleep(1000);
         long sum = 0;
         long min = Long.MAX_VALUE;
         long max = 0;
+        long time = benchIter(new File(file));
+        gestionMemoire();
+        System.out.println("Temps de l'itération : " + time + "ms");
         for (int count = 1; count <= NB_ITER; count++) {
-            long time = benchIter(new File("fichierMoyen.csv"));
+            time = benchIter(new File(file));
             System.out.println("Temps de l'itération : " + time + "ms");
             gestionMemoire();
             sum += time;
@@ -110,7 +113,7 @@ public abstract class CommonCsvSample {
             if (max < time) {
                 max = time;
             }
-            Thread.sleep(30000);
+            Thread.sleep(1000);
         }
         long moyenne = sum / NB_ITER;
 
@@ -118,6 +121,16 @@ public abstract class CommonCsvSample {
         System.out.println("\tminimum : " + min + "ms");
         System.out.println("\tmaximum : " + max + "ms");
         System.out.println("\tmoyenne : " + moyenne + "ms");
+    }
+
+    public void benchMoyen() throws InterruptedException, IOException {
+        // Attention il faut lancer GenerationFichierCsv.main avant.
+        bench("fichierMoyen.csv");
+    }
+
+    public void benchGros() throws InterruptedException, IOException {
+        // Attention il faut lancer GenerationFichierCsv.main avant.
+        bench("fichierGros.csv");
     }
 
     public static void gestionMemoire() {

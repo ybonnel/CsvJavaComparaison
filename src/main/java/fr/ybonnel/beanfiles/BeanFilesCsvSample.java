@@ -65,6 +65,9 @@ public class BeanFilesCsvSample extends CommonCsvSample {
         System.out.println("Lecture d'un csv simple : " + time + "µs");
         time = sample.readComplexDogs();
         System.out.println("Lecture d'un csv complexe : " + time + "µs");
+        System.out.println("Bench moyen");
         sample.benchMoyen();
+        System.out.println("Bench gros");
+        sample.benchGros();
     }
 }
