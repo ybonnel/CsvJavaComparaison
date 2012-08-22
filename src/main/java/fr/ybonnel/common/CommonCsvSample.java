@@ -17,6 +17,9 @@
 package fr.ybonnel.common;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -26,6 +29,8 @@ import java.util.List;
  */
 public abstract class CommonCsvSample {
 
+
+    public static final int NB_ITER = 5;
 
     public static InputStream getCsvFile() {
         return CommonCsvSample.class.getResourceAsStream("/dogs.csv");
@@ -38,29 +43,27 @@ public abstract class CommonCsvSample {
 
     public abstract List<Dog> getDogs(InputStream stream) throws IOException;
 
-    public long readDogs() throws IOException {
+    private long readDogs(InputStream stream, boolean display) throws IOException {
         long startTime = System.nanoTime();
 
-        currentDogs = getDogs(getCsvFile());
-        for (Dog dog : currentDogs) {
-            System.out.println(dog);
+        currentDogs = getDogs(stream);
+        long endTime = System.nanoTime();
+        if (display) {
+            for (Dog dog : currentDogs) {
+                System.out.println(dog);
+            }
         }
 
-        long endTime = System.nanoTime();
-        return endTime - startTime;
+        return (endTime - startTime)/1000;
+    }
+
+    public long readDogs() throws IOException {
+        return readDogs(getCsvFile(), true);
     }
 
 
     public long readComplexDogs() throws IOException {
-        long startTime = System.nanoTime();
-
-        currentDogs = getDogs(getComplexCsvFile());
-        for (Dog dog : currentDogs) {
-            System.out.println(dog);
-        }
-
-        long endTime = System.nanoTime();
-        return endTime - startTime;
+        return readDogs(getComplexCsvFile(), true);
     }
 
 
@@ -74,5 +77,60 @@ public abstract class CommonCsvSample {
 
         long endTime = System.nanoTime();
         return endTime - startTime;
+    }
+
+    public abstract void readObjetCsv(InputStream stream) throws IOException;
+
+    public long benchIter(File file) throws IOException {
+        InputStream stream = new FileInputStream(file);
+        long startTime = System.currentTimeMillis();
+        readObjetCsv(stream);
+        long elapsedTime = (System.currentTimeMillis() - startTime);
+        return elapsedTime;
+    }
+
+    public void benchMoyen() throws InterruptedException, IOException {
+
+        // Attention il faut lancer GenerationFichierCsv.main avant.
+
+        Thread.sleep(30000);
+        gestionMemoire();
+        Thread.sleep(30000);
+        long sum = 0;
+        long min = Long.MAX_VALUE;
+        long max = 0;
+        for (int count = 1; count <= NB_ITER; count++) {
+            long time = benchIter(new File("fichierMoyen.csv"));
+            System.out.println("Temps de l'itération : " + time + "ms");
+            gestionMemoire();
+            sum += time;
+            if (min > time) {
+                min = time;
+            }
+            if (max < time) {
+                max = time;
+            }
+            Thread.sleep(30000);
+        }
+        long moyenne = sum / NB_ITER;
+
+        System.out.println("Bench moyen : ");
+        System.out.println("\tminimum : " + min + "ms");
+        System.out.println("\tmaximum : " + max + "ms");
+        System.out.println("\tmoyenne : " + moyenne + "ms");
+    }
+
+    public static void gestionMemoire() {
+        // Mémoire totale allouée
+        long totalMemory = Runtime.getRuntime().totalMemory();
+        // Mémoire utilisée
+        long currentMemory = totalMemory - Runtime.getRuntime().freeMemory();
+        System.out.println("Mémoire avant gc : " + (currentMemory / 1024) + "ko/" + (totalMemory / 1024) + "ko");
+        System.gc();
+        // Mémoire totale allouée
+        totalMemory = Runtime.getRuntime().totalMemory();
+        // Mémoire utilisée
+        currentMemory = totalMemory - Runtime.getRuntime().freeMemory();
+        System.out.println("Mémoire après gc : " + (currentMemory / 1024) + "ko/" + (totalMemory / 1024) + "ko");
     }
 }

@@ -19,6 +19,8 @@ package fr.ybonnel.beanfiles;
 import com.googlecode.beanfiles.csv.CSVReaderIterator;
 import fr.ybonnel.common.CommonCsvSample;
 import fr.ybonnel.common.Dog;
+import fr.ybonnel.common.GenerationFchierCsv;
+import fr.ybonnel.common.ObjetCsv;
 import org.apache.commons.lang.NotImplementedException;
 
 import java.io.File;
@@ -31,6 +33,7 @@ import java.util.List;
  * @author ybonnel
  */
 public class BeanFilesCsvSample extends CommonCsvSample {
+
 
     public List<Dog> getDogs(InputStream stream) throws IOException {
         CSVReaderIterator<Dog> readerIterator = new CSVReaderIterator<Dog>(Dog.class, stream);
@@ -47,8 +50,21 @@ public class BeanFilesCsvSample extends CommonCsvSample {
         throw new NotImplementedException();
     }
 
-    public static void main(String[] args) throws IOException {
-        new BeanFilesCsvSample().readDogs();
-        new BeanFilesCsvSample().readComplexDogs();
+    @Override
+    public void readObjetCsv(InputStream stream) throws IOException {
+        CSVReaderIterator<ObjetCsv> readerIterator = new CSVReaderIterator<ObjetCsv>(ObjetCsv.class, stream);
+        stream.close();
+        for (ObjetCsv objet : readerIterator) {
+            // do nothing.
+        }
+    }
+
+    public static void main(String[] args) throws IOException, InterruptedException {
+        BeanFilesCsvSample sample = new BeanFilesCsvSample();
+        long time = sample.readDogs();
+        System.out.println("Lecture d'un csv simple : " + time + "µs");
+        time = sample.readComplexDogs();
+        System.out.println("Lecture d'un csv complexe : " + time + "µs");
+        sample.benchMoyen();
     }
 }
