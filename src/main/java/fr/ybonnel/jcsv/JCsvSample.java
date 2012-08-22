@@ -27,7 +27,9 @@ import com.googlecode.jcsv.writer.CSVWriter;
 import com.googlecode.jcsv.writer.internal.CSVWriterBuilder;
 import fr.ybonnel.common.CommonCsvSample;
 import fr.ybonnel.common.Dog;
+import fr.ybonnel.common.DogValid;
 import fr.ybonnel.common.ObjetCsv;
+import org.apache.commons.lang.NotImplementedException;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -91,6 +93,11 @@ public class JCsvSample extends CommonCsvSample {
         while ((objet = csvReader.readNext()) != null) {
             // do nothing
         }
+    }
+
+    @Override
+    public List<DogValid> readDogsValid(InputStream stream) {
+        throw new NotImplementedException();
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {

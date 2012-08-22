@@ -39,6 +39,12 @@ public abstract class CommonCsvSample {
     public static InputStream getComplexCsvFile() {
         return CommonCsvSample.class.getResourceAsStream("/dogsComplex.csv");
     }
+    public static InputStream getRequiredCsvFile() {
+        return CommonCsvSample.class.getResourceAsStream("/dogsRequired.csv");
+    }
+    public static InputStream getRaceCsvFile() {
+        return CommonCsvSample.class.getResourceAsStream("/dogsRace.csv");
+    }
 
     private List<Dog> currentDogs;
 
@@ -154,5 +160,21 @@ public abstract class CommonCsvSample {
         // Mémoire utilisée
         currentMemory = totalMemory - Runtime.getRuntime().freeMemory();
         System.out.println("Mémoire après gc : " + (currentMemory / 1024) + "ko/" + (totalMemory / 1024) + "ko");
+    }
+
+    public abstract List<DogValid> readDogsValid(InputStream stream) throws IOException;
+
+    public void validateCsv() throws IOException {
+        readDogsValid(getCsvFile());
+        try {
+            readDogsValid(getRequiredCsvFile());
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        try {
+            readDogsValid(getRaceCsvFile());
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 }

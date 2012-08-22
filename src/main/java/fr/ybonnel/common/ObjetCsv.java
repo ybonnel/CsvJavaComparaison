@@ -1,47 +1,68 @@
 package fr.ybonnel.common;
 
 import com.googlecode.jcsv.annotations.MapToColumn;
+import org.jsefa.csv.annotation.CsvField;
 
 public class ObjetCsv {
 
+    @CsvField(pos = 0)
     @MapToColumn(column = 0)
 	private String a1;
+    @CsvField(pos = 1)
     @MapToColumn(column = 1)
 	private Boolean a2;
+    @CsvField(pos = 2)
     @MapToColumn(column = 2)
 	private Integer a3;
+    @CsvField(pos = 3)
     @MapToColumn(column = 3)
 	private Double a4;
+    @CsvField(pos = 4)
     @MapToColumn(column = 4)
 	private String a5;
+    @CsvField(pos = 5)
     @MapToColumn(column = 5)
 	private String a6;
+    @CsvField(pos = 6)
     @MapToColumn(column = 6)
 	private Boolean a7;
+    @CsvField(pos = 7)
     @MapToColumn(column = 7)
 	private Integer a8;
+    @CsvField(pos = 8)
     @MapToColumn(column = 8)
 	private Double a9;
+    @CsvField(pos = 9)
     @MapToColumn(column = 9)
 	private String a10;
+    @CsvField(pos = 10)
     @MapToColumn(column = 10)
 	private String a11;
+    @CsvField(pos = 11)
     @MapToColumn(column = 11)
 	private Boolean a12;
+    @CsvField(pos = 12)
     @MapToColumn(column = 12)
 	private Integer a13;
+    @CsvField(pos = 13)
     @MapToColumn(column = 13)
 	private Double a14;
+    @CsvField(pos = 14)
     @MapToColumn(column = 14)
 	private String a15;
+    @CsvField(pos = 15)
     @MapToColumn(column = 15)
 	private String a16;
+    @CsvField(pos = 16)
     @MapToColumn(column = 16)
 	private Boolean a17;
+    @CsvField(pos = 17)
     @MapToColumn(column = 17)
 	private Integer a18;
+    @CsvField(pos = 18)
     @MapToColumn(column = 18)
 	private Double a19;
+    @CsvField(pos = 19)
     @MapToColumn(column = 19)
 	private String a20;
 

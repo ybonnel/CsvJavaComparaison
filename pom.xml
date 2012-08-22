@@ -64,7 +64,33 @@
             <artifactId>jcsv</artifactId>
             <version>1.4.0</version>
         </dependency>
-    </dependencies>
 
+        <!-- jsefa -->
+        <dependency>
+            <groupId>org.jsefa</groupId>
+            <artifactId>jsefa</artifactId>
+            <version>1.0.0-RELEASE</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/jsefa-1.0.0.RELEASE.jar</systemPath>
+        </dependency>
+
+        <!-- super-csv -->
+        <dependency>
+            <groupId>super-csv</groupId>
+            <artifactId>super-csv</artifactId>
+            <version>1.52</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/SuperCSV-1.52.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>spiffy</groupId>
+            <artifactId>spiffy</artifactId>
+            <version>0.05</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/spiffy-with_source-all-0.05.jar</systemPath>
+        </dependency>
+
+
+    </dependencies>
     
 </project>

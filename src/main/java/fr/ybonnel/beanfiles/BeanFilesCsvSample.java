@@ -19,6 +19,7 @@ package fr.ybonnel.beanfiles;
 import com.googlecode.beanfiles.csv.CSVReaderIterator;
 import fr.ybonnel.common.CommonCsvSample;
 import fr.ybonnel.common.Dog;
+import fr.ybonnel.common.DogValid;
 import fr.ybonnel.common.GenerationFchierCsv;
 import fr.ybonnel.common.ObjetCsv;
 import org.apache.commons.lang.NotImplementedException;
@@ -57,6 +58,11 @@ public class BeanFilesCsvSample extends CommonCsvSample {
         for (ObjetCsv objet : readerIterator) {
             // do nothing.
         }
+    }
+
+    @Override
+    public List<DogValid> readDogsValid(InputStream stream) {
+        throw new NotImplementedException();
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
