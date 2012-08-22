@@ -1,26 +1,48 @@
 package fr.ybonnel.common;
 
+import com.googlecode.jcsv.annotations.MapToColumn;
+
 public class ObjetCsv {
 
+    @MapToColumn(column = 0)
 	private String a1;
+    @MapToColumn(column = 1)
 	private Boolean a2;
+    @MapToColumn(column = 2)
 	private Integer a3;
+    @MapToColumn(column = 3)
 	private Double a4;
+    @MapToColumn(column = 4)
 	private String a5;
+    @MapToColumn(column = 5)
 	private String a6;
+    @MapToColumn(column = 6)
 	private Boolean a7;
+    @MapToColumn(column = 7)
 	private Integer a8;
+    @MapToColumn(column = 8)
 	private Double a9;
+    @MapToColumn(column = 9)
 	private String a10;
+    @MapToColumn(column = 10)
 	private String a11;
+    @MapToColumn(column = 11)
 	private Boolean a12;
+    @MapToColumn(column = 12)
 	private Integer a13;
+    @MapToColumn(column = 13)
 	private Double a14;
+    @MapToColumn(column = 14)
 	private String a15;
+    @MapToColumn(column = 15)
 	private String a16;
+    @MapToColumn(column = 16)
 	private Boolean a17;
+    @MapToColumn(column = 17)
 	private Integer a18;
+    @MapToColumn(column = 18)
 	private Double a19;
+    @MapToColumn(column = 19)
 	private String a20;
 
     public void setA1(String a1) {

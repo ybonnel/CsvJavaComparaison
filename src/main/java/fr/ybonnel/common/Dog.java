@@ -1,8 +1,13 @@
 package fr.ybonnel.common;
 
+import com.googlecode.jcsv.annotations.MapToColumn;
+
 public class Dog {
+    @MapToColumn( column = 0)
     private String name;
+    @MapToColumn( column = 1)
     private String race;
+    @MapToColumn( column = 2)
     private String proprietary;
 
     public void setName(String name) {
@@ -15,6 +20,18 @@ public class Dog {
 
     public void setProprietary(String proprietary) {
         this.proprietary = proprietary;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getRace() {
+        return race;
+    }
+
+    public String getProprietary() {
+        return proprietary;
     }
 
     @Override

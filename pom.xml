@@ -9,6 +9,7 @@
     <version>1.0</version>
 
     <dependencies>
+        <!-- beanfiles -->
         <dependency>
             <artifactId>beanfiles</artifactId>
             <groupId>beanfiles</groupId>
@@ -55,6 +56,13 @@
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
             <version>3.2</version>
+        </dependency>
+
+        <!-- jcsv -->
+        <dependency>
+            <groupId>com.googlecode.jcsv</groupId>
+            <artifactId>jcsv</artifactId>
+            <version>1.4.0</version>
         </dependency>
     </dependencies>
 

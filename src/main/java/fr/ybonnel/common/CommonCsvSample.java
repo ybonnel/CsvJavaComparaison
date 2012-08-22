@@ -16,6 +16,7 @@
  */
 package fr.ybonnel.common;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -76,6 +77,14 @@ public abstract class CommonCsvSample {
         writeFile(currentDogs, file);
 
         long endTime = System.nanoTime();
+
+        System.out.println("Contenu du fichier");
+        BufferedReader bufReader = new BufferedReader(new FileReader(file));
+        String ligne;
+        while ((ligne =bufReader.readLine()) != null) {
+            System.out.println(ligne);
+        }
+
         return endTime - startTime;
     }
 
