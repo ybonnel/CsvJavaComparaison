@@ -1,0 +1,2 @@
+Code source utilisé pour un comparatif des parseurs CSV en Java :
+"JustAnOtherDevBlog : Comparaison des parseurs CSV":http://www.ybonnel.fr/2012/08/comparaison-des-parseurs-csv.html
