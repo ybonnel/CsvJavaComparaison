@@ -16,6 +16,7 @@
  */
 package fr.ybonnel.common;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -30,14 +31,29 @@ public abstract class CommonStep1 {
         return CommonStep1.class.getResourceAsStream("/dogs.csv");
     }
 
+    private List<Dog> currentDogs;
+
     public abstract List<Dog> getDogs(InputStream stream) throws IOException;
 
     public long readDogs() throws IOException {
         long startTime = System.nanoTime();
 
-        for (Dog dog : getDogs(getCsvFile())) {
+        currentDogs = getDogs(getCsvFile());
+        for (Dog dog : currentDogs) {
             System.out.println(dog);
         }
+
+        long endTime = System.nanoTime();
+        return endTime - startTime;
+    }
+
+    public abstract void writeFile(List<Dog> dogs, File file) throws IOException;
+
+    public long writeDogs() throws IOException {
+        long startTime = System.nanoTime();
+
+        File file = File.createTempFile("dogs", "csv");
+        writeFile(currentDogs, file);
 
         long endTime = System.nanoTime();
         return endTime - startTime;

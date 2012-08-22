@@ -19,7 +19,9 @@ package fr.ybonnel.beanfiles;
 import com.googlecode.beanfiles.csv.CSVReaderIterator;
 import fr.ybonnel.common.CommonStep1;
 import fr.ybonnel.common.Dog;
+import org.apache.commons.lang.NotImplementedException;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -38,6 +40,11 @@ public class BeanFilesStep1 extends CommonStep1{
             dogs.add(dog);
         }
         return dogs;
+    }
+
+    @Override
+    public void writeFile(List<Dog> dogs, File file) throws IOException {
+        throw new NotImplementedException();
     }
 
     public static void main(String[] args) throws IOException {
