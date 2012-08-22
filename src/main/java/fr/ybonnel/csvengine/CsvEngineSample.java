@@ -14,65 +14,68 @@
  * Contributors:
  *     ybonnel - initial API and implementation
  */
-package fr.ybonnel.beanfiles;
+package fr.ybonnel.csvengine;
 
-import com.googlecode.beanfiles.csv.CSVReaderIterator;
 import fr.ybonnel.common.CommonCsvSample;
 import fr.ybonnel.common.Dog;
 import fr.ybonnel.common.DogValid;
 import fr.ybonnel.common.ObjetCsv;
 import fr.ybonnel.csvengine.exception.CsvErrorsExceededException;
-import org.apache.commons.lang.NotImplementedException;
+import fr.ybonnel.csvengine.model.InsertObject;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.io.InputStreamReader;
 import java.util.List;
 
 /**
  * @author ybonnel
  */
-public class BeanFilesCsvSample extends CommonCsvSample {
-
-
-    public List<Dog> getDogs(InputStream stream) throws IOException {
-        CSVReaderIterator<Dog> readerIterator = new CSVReaderIterator<Dog>(Dog.class, stream);
-        stream.close();
-        List<Dog> dogs = new ArrayList<Dog>();
-        for (Dog dog : readerIterator) {
-            dogs.add(dog);
-        }
-        return dogs;
+public class CsvEngineSample extends CommonCsvSample {
+    @Override
+    public List<Dog> getDogs(InputStream stream) throws IOException, CsvErrorsExceededException {
+        CsvEngine engine = new CsvEngine(Dog.class);
+        return engine.parseInputStream(stream, Dog.class).getObjects();
     }
 
     @Override
     public void writeFile(List<Dog> dogs, File file) throws IOException {
-        throw new NotImplementedException();
+        CsvEngine engine = new CsvEngine(Dog.class);
+        engine.writeFile(new FileWriter(file), dogs, Dog.class);
     }
 
+    CsvEngine engine = new CsvEngine(ObjetCsv.class);
+
     @Override
-    public void readObjetCsv(InputStream stream, boolean display) throws IOException {
-        CSVReaderIterator<ObjetCsv> readerIterator = new CSVReaderIterator<ObjetCsv>(ObjetCsv.class, stream);
-        stream.close();
-        for (ObjetCsv objet : readerIterator) {
-            if (display) {
-                System.out.println(objet.toString());
+    public void readObjetCsv(InputStream stream, final boolean display) throws IOException, CsvErrorsExceededException {
+
+        engine.parseFileAndInsert(new InputStreamReader(stream), ObjetCsv.class, new InsertObject<ObjetCsv>() {
+            @Override
+            public void insertObject(ObjetCsv object) {
+               if (display) {
+                   System.out.println(object.toString());
+               }
             }
-        }
+        });
     }
 
     @Override
-    public List<DogValid> readDogsValid(InputStream stream) {
-        throw new NotImplementedException();
+    public List<DogValid> readDogsValid(InputStream stream) throws CsvErrorsExceededException {
+        CsvEngine engine = new CsvEngine(DogValid.class);
+        return engine.parseInputStream(stream, DogValid.class).getObjects();
     }
 
     public static void main(String[] args) throws IOException, InterruptedException, CsvErrorsExceededException {
-        BeanFilesCsvSample sample = new BeanFilesCsvSample();
+        CsvEngineSample sample = new CsvEngineSample();
         long time = sample.readDogs();
         System.out.println("Lecture d'un csv simple : " + time + "µs");
         time = sample.readComplexDogs();
         System.out.println("Lecture d'un csv complexe : " + time + "µs");
+        time = sample.writeDogs();
+        System.out.println("Écriture d'un fichier csv : " + time + "µs");
+        sample.validateCsv();
         System.out.println("Bench moyen");
         sample.benchMoyen();
         System.out.println("Bench gros");

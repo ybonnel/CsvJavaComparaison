@@ -16,10 +16,16 @@
  */
 package fr.ybonnel.common;
 
+import fr.ybonnel.beanfiles.BeanFilesCsvSample;
+import fr.ybonnel.csvengine.CsvEngineSample;
+import fr.ybonnel.csvengine.exception.CsvErrorsExceededException;
+import fr.ybonnel.jcsv.JCsvSample;
+import fr.ybonnel.jsefa.JSefaSample;
+import fr.ybonnel.supercsv.SuperCsvSample;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,9 +54,9 @@ public abstract class CommonCsvSample {
 
     private List<Dog> currentDogs;
 
-    public abstract List<Dog> getDogs(InputStream stream) throws IOException;
+    public abstract List<Dog> getDogs(InputStream stream) throws IOException, CsvErrorsExceededException;
 
-    private long readDogs(InputStream stream, boolean display) throws IOException {
+    private long readDogs(InputStream stream, boolean display) throws IOException, CsvErrorsExceededException {
         long startTime = System.nanoTime();
 
         currentDogs = getDogs(stream);
@@ -64,12 +70,12 @@ public abstract class CommonCsvSample {
         return (endTime - startTime)/1000;
     }
 
-    public long readDogs() throws IOException {
+    public long readDogs() throws IOException, CsvErrorsExceededException {
         return readDogs(getCsvFile(), true);
     }
 
 
-    public long readComplexDogs() throws IOException {
+    public long readComplexDogs() throws IOException, CsvErrorsExceededException {
         return readDogs(getComplexCsvFile(), true);
     }
 
@@ -94,17 +100,17 @@ public abstract class CommonCsvSample {
         return endTime - startTime;
     }
 
-    public abstract void readObjetCsv(InputStream stream) throws IOException;
+    public abstract void readObjetCsv(InputStream stream, boolean display) throws IOException, CsvErrorsExceededException;
 
-    public long benchIter(File file) throws IOException {
+    public long benchIter(File file) throws IOException, CsvErrorsExceededException {
         InputStream stream = new FileInputStream(file);
         long startTime = System.currentTimeMillis();
-        readObjetCsv(stream);
+        readObjetCsv(stream, false);
         long elapsedTime = (System.currentTimeMillis() - startTime);
         return elapsedTime;
     }
 
-    public void bench(String file) throws InterruptedException, IOException {
+    public void bench(String file) throws InterruptedException, IOException, CsvErrorsExceededException {
 
         // Attention il faut lancer GenerationFichierCsv.main avant.
 
@@ -115,12 +121,11 @@ public abstract class CommonCsvSample {
         long min = Long.MAX_VALUE;
         long max = 0;
         long time = benchIter(new File(file));
+        long sumConsoMemoire = 0;
         gestionMemoire();
-        System.out.println("Temps de l'itération : " + time + "ms");
         for (int count = 1; count <= NB_ITER; count++) {
             time = benchIter(new File(file));
-            System.out.println("Temps de l'itération : " + time + "ms");
-            gestionMemoire();
+            sumConsoMemoire += gestionMemoire();
             sum += time;
             if (min > time) {
                 min = time;
@@ -131,40 +136,42 @@ public abstract class CommonCsvSample {
             Thread.sleep(1000);
         }
         long moyenne = sum / NB_ITER;
+        long consoMoyenne = sumConsoMemoire / NB_ITER / 1024 / 1024;
 
-        System.out.println("Bench moyen : ");
+        System.out.println("Bench " + file + " : ");
         System.out.println("\tminimum : " + min + "ms");
         System.out.println("\tmaximum : " + max + "ms");
         System.out.println("\tmoyenne : " + moyenne + "ms");
+        System.out.println("\tConsomation mémoire moyenne : " + consoMoyenne + "Mo");
     }
 
-    public void benchMoyen() throws InterruptedException, IOException {
+    public void benchMoyen() throws InterruptedException, IOException, CsvErrorsExceededException {
         // Attention il faut lancer GenerationFichierCsv.main avant.
         bench("fichierMoyen.csv");
     }
 
-    public void benchGros() throws InterruptedException, IOException {
+    public void benchGros() throws InterruptedException, IOException, CsvErrorsExceededException {
         // Attention il faut lancer GenerationFichierCsv.main avant.
         bench("fichierGros.csv");
     }
 
-    public static void gestionMemoire() {
+    public static long gestionMemoire() {
         // Mémoire totale allouée
         long totalMemory = Runtime.getRuntime().totalMemory();
         // Mémoire utilisée
-        long currentMemory = totalMemory - Runtime.getRuntime().freeMemory();
-        System.out.println("Mémoire avant gc : " + (currentMemory / 1024) + "ko/" + (totalMemory / 1024) + "ko");
+        long oldCurrentMemory = totalMemory - Runtime.getRuntime().freeMemory();
         System.gc();
         // Mémoire totale allouée
         totalMemory = Runtime.getRuntime().totalMemory();
         // Mémoire utilisée
-        currentMemory = totalMemory - Runtime.getRuntime().freeMemory();
-        System.out.println("Mémoire après gc : " + (currentMemory / 1024) + "ko/" + (totalMemory / 1024) + "ko");
+        long currentMemory = totalMemory - Runtime.getRuntime().freeMemory();
+        return oldCurrentMemory - currentMemory;
+
     }
 
-    public abstract List<DogValid> readDogsValid(InputStream stream) throws IOException;
+    public abstract List<DogValid> readDogsValid(InputStream stream) throws IOException, CsvErrorsExceededException;
 
-    public void validateCsv() throws IOException {
+    public void validateCsv() throws IOException, CsvErrorsExceededException {
         readDogsValid(getCsvFile());
         try {
             readDogsValid(getRequiredCsvFile());
@@ -176,5 +183,37 @@ public abstract class CommonCsvSample {
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) throws CsvErrorsExceededException, IOException, InterruptedException {
+        System.out.println("Bench de BeanFiles");
+        BeanFilesCsvSample beanFilesCsvSample = new BeanFilesCsvSample();
+        beanFilesCsvSample.readObjetCsv(CommonCsvSample.class.getResourceAsStream("/testBench.csv"), true);
+        beanFilesCsvSample.benchMoyen();
+        beanFilesCsvSample.benchGros();
+
+        System.out.println("Bench de JCsv");
+        JCsvSample jCsvSample = new JCsvSample();
+        jCsvSample.readObjetCsv(CommonCsvSample.class.getResourceAsStream("/testBench.csv"), true);
+        jCsvSample.benchMoyen();
+        jCsvSample.benchGros();
+
+        System.out.println("Bench de Jsefa");
+        JSefaSample jSefaSample = new JSefaSample();
+        jSefaSample.readObjetCsv(CommonCsvSample.class.getResourceAsStream("/testBench.csv"), true);
+        jSefaSample.benchMoyen();
+        jSefaSample.benchGros();
+
+        System.out.println("Bench de SuperCsv");
+        SuperCsvSample superCsvSample = new SuperCsvSample();
+        superCsvSample.readObjetCsv(CommonCsvSample.class.getResourceAsStream("/testBench.csv"), true);
+        superCsvSample.benchMoyen();
+        superCsvSample.benchGros();
+
+        System.out.println("Bench de CsvEngine");
+        CsvEngineSample csvEngineSample = new CsvEngineSample();
+        csvEngineSample.readObjetCsv(CommonCsvSample.class.getResourceAsStream("/testBench.csv"), true);
+        csvEngineSample.benchMoyen();
+        csvEngineSample.benchGros();
     }
 }

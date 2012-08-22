@@ -20,6 +20,7 @@ import fr.ybonnel.common.CommonCsvSample;
 import fr.ybonnel.common.Dog;
 import fr.ybonnel.common.DogValid;
 import fr.ybonnel.common.ObjetCsv;
+import fr.ybonnel.csvengine.exception.CsvErrorsExceededException;
 import org.apache.commons.lang.NotImplementedException;
 import org.supercsv.cellprocessor.ParseBool;
 import org.supercsv.cellprocessor.ParseDouble;
@@ -87,14 +88,16 @@ public class SuperCsvSample extends CommonCsvSample {
     };
 
     @Override
-    public void readObjetCsv(InputStream stream) throws IOException {
+    public void readObjetCsv(InputStream stream, boolean display) throws IOException {
 
         ICsvBeanReader inFile = new CsvBeanReader(new InputStreamReader(stream), CsvPreference.STANDARD_PREFERENCE);
 
         final String[] header = inFile.getCSVHeader(true);
         ObjetCsv objetCsv;
         while((objetCsv = inFile.read(ObjetCsv.class, header,userProcessorsBench)) != null) {
-            // Do nothing
+            if (display) {
+                System.out.println(objetCsv.toString());
+            }
         }
 
         inFile.close();
@@ -124,7 +127,7 @@ public class SuperCsvSample extends CommonCsvSample {
         return dogs;
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, CsvErrorsExceededException {
         SuperCsvSample sample = new SuperCsvSample();
         long time = sample.readDogs();
         System.out.println("Lecture d'un csv simple : " + time + "µs");

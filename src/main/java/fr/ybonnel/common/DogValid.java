@@ -1,6 +1,11 @@
 package fr.ybonnel.common;
 
 import com.googlecode.jcsv.annotations.MapToColumn;
+import fr.ybonnel.csvengine.annotation.CsvColumn;
+import fr.ybonnel.csvengine.annotation.CsvFile;
+import fr.ybonnel.csvengine.annotation.CsvValidation;
+import fr.ybonnel.csvengine.validator.ValidateException;
+import fr.ybonnel.csvengine.validator.ValidatorCsv;
 import org.jsefa.common.validator.ValidationError;
 import org.jsefa.common.validator.ValidationResult;
 import org.jsefa.common.validator.Validator;
@@ -12,11 +17,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 @CsvDataType
+@CsvFile
 public class DogValid {
+    @CsvColumn(value = "name", mandatory = true)
     @CsvField(pos = 0, required = true)
     private String name;
+    @CsvValidation(ValidatorRace.class)
+    @CsvColumn(value = "race", mandatory = true)
     @CsvField(pos = 1, required = true, validatorType = ValidatorRaceJsefa.class)
     private String race;
+    @CsvColumn("proprietary")
     @CsvField(pos = 2)
     private String proprietary;
 
@@ -63,7 +73,6 @@ public class DogValid {
     }};
 
     public static class ValidatorRaceJsefa implements Validator {
-
         @Override
         public ValidationResult validate(Object o) {
             if (!POSSIBLE_RACES.contains(o)) {
@@ -74,6 +83,15 @@ public class DogValid {
 
         public static ValidatorRaceJsefa create(ValidatorConfiguration config) {
             return new ValidatorRaceJsefa();
+        }
+    }
+
+    public static class ValidatorRace extends ValidatorCsv {
+        @Override
+        public void validate(String field) throws ValidateException {
+            if (!POSSIBLE_RACES.contains(field)) {
+                throw new ValidateException("The race \"" + field + "\" isn't correct");
+            }
         }
     }
 }

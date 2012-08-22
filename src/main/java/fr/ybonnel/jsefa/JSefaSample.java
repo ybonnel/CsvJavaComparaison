@@ -19,11 +19,13 @@ package fr.ybonnel.jsefa;
 import fr.ybonnel.common.CommonCsvSample;
 import fr.ybonnel.common.Dog;
 import fr.ybonnel.common.DogValid;
+import fr.ybonnel.common.ObjetCsv;
+import fr.ybonnel.csvengine.exception.CsvErrorsExceededException;
 import org.jsefa.Deserializer;
 import org.jsefa.Serializer;
+import org.jsefa.common.converter.provider.SimpleTypeConverterProvider;
 import org.jsefa.common.lowlevel.filter.FilterResult;
 import org.jsefa.common.lowlevel.filter.LineFilter;
-import org.jsefa.csv.CsvDeserializerImpl;
 import org.jsefa.csv.CsvIOFactory;
 import org.jsefa.csv.config.CsvConfiguration;
 
@@ -32,7 +34,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,15 +72,29 @@ public class JSefaSample extends CommonCsvSample {
     }
 
     @Override
-    public void readObjetCsv(InputStream stream) throws IOException {
+    public void readObjetCsv(InputStream stream, boolean display) throws IOException {
         CsvConfiguration config = new CsvConfiguration();
         config.setFieldDelimiter(',');
-        Deserializer deserializer = CsvIOFactory.createFactory(config, Dog.class).createDeserializer();
+        config.setLineFilter(new LineFilter() {
+            @Override
+            public FilterResult filter(String s, int i, boolean b, boolean b1) {
+                if (i == 1) {
+                    return FilterResult.FAILED;
+                }
+                return FilterResult.PASSED;
+            }
+        });
+        config.getSimpleTypeConverterProvider().registerConverterType(Double.class, ObjetCsv.DoubleConverter.class);
+        config.getSimpleTypeConverterProvider().registerConverterType(Boolean.class, ObjetCsv.BooleanConverter.class);
+        Deserializer deserializer = CsvIOFactory.createFactory(config, ObjetCsv.class).createDeserializer();
 
 
         deserializer.open(new InputStreamReader(stream));
         while (deserializer.hasNext()) {
-            Dog dog  =deserializer.<Dog>next();
+            ObjetCsv objetCsv =deserializer.<ObjetCsv>next();
+            if (display) {
+                System.out.println(objetCsv.toString());
+            }
         }
         deserializer.close(true);
 
@@ -102,7 +117,7 @@ public class JSefaSample extends CommonCsvSample {
         return dogs;
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, CsvErrorsExceededException {
         JSefaSample sample = new JSefaSample();
         long time = sample.readDogs();
         System.out.println("Lecture d'un csv simple : " + time + "µs");

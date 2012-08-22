@@ -29,6 +29,7 @@ import fr.ybonnel.common.CommonCsvSample;
 import fr.ybonnel.common.Dog;
 import fr.ybonnel.common.DogValid;
 import fr.ybonnel.common.ObjetCsv;
+import fr.ybonnel.csvengine.exception.CsvErrorsExceededException;
 import org.apache.commons.lang.NotImplementedException;
 
 import java.io.File;
@@ -80,7 +81,7 @@ public class JCsvSample extends CommonCsvSample {
     }
 
     @Override
-    public void readObjetCsv(InputStream stream) throws IOException {
+    public void readObjetCsv(InputStream stream, boolean display) throws IOException {
         Reader reader = new InputStreamReader(stream);
 
         ValueProcessorProvider provider = new ValueProcessorProvider();
@@ -91,7 +92,10 @@ public class JCsvSample extends CommonCsvSample {
                 .build();
         ObjetCsv objet;
         while ((objet = csvReader.readNext()) != null) {
-            // do nothing
+
+            if (display) {
+                System.out.println(objet.toString());
+            }
         }
     }
 
@@ -100,7 +104,7 @@ public class JCsvSample extends CommonCsvSample {
         throw new NotImplementedException();
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, CsvErrorsExceededException {
         JCsvSample sample = new JCsvSample();
         long time = sample.readDogs();
         System.out.println("Lecture d'un csv simple : " + time + "µs");

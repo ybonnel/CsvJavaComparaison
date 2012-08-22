@@ -1,17 +1,23 @@
 package fr.ybonnel.common;
 
 import com.googlecode.jcsv.annotations.MapToColumn;
+import fr.ybonnel.csvengine.annotation.CsvColumn;
+import fr.ybonnel.csvengine.annotation.CsvFile;
 import org.jsefa.csv.annotation.CsvDataType;
 import org.jsefa.csv.annotation.CsvField;
 
 @CsvDataType
+@CsvFile
 public class Dog {
+    @CsvColumn("name")
     @CsvField(pos = 0)
     @MapToColumn( column = 0)
     private String name;
+    @CsvColumn("race")
     @CsvField(pos = 1)
     @MapToColumn( column = 1)
     private String race;
+    @CsvColumn("proprietary")
     @CsvField(pos = 2)
     @MapToColumn( column = 2)
     private String proprietary;

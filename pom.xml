@@ -90,6 +90,12 @@
             <systemPath>${project.basedir}/libs/spiffy-with_source-all-0.05.jar</systemPath>
         </dependency>
 
+        <!-- CsvEngine -->
+        <dependency>
+            <groupId>fr.ybonnel</groupId>
+            <artifactId>csvengine</artifactId>
+            <version>1.3.4</version>
+        </dependency>
 
     </dependencies>
     
