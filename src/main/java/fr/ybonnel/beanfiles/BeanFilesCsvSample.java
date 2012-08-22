@@ -49,5 +49,6 @@ public class BeanFilesCsvSample extends CommonCsvSample {
 
     public static void main(String[] args) throws IOException {
         new BeanFilesCsvSample().readDogs();
+        new BeanFilesCsvSample().readComplexDogs();
     }
 }

@@ -30,6 +30,9 @@ public abstract class CommonCsvSample {
     public static InputStream getCsvFile() {
         return CommonCsvSample.class.getResourceAsStream("/dogs.csv");
     }
+    public static InputStream getComplexCsvFile() {
+        return CommonCsvSample.class.getResourceAsStream("/dogsComplex.csv");
+    }
 
     private List<Dog> currentDogs;
 
@@ -46,6 +49,20 @@ public abstract class CommonCsvSample {
         long endTime = System.nanoTime();
         return endTime - startTime;
     }
+
+
+    public long readComplexDogs() throws IOException {
+        long startTime = System.nanoTime();
+
+        currentDogs = getDogs(getComplexCsvFile());
+        for (Dog dog : currentDogs) {
+            System.out.println(dog);
+        }
+
+        long endTime = System.nanoTime();
+        return endTime - startTime;
+    }
+
 
     public abstract void writeFile(List<Dog> dogs, File file) throws IOException;
 
